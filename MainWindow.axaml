@@ -2,9 +2,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="550"
         x:Class="RNGExperiments.MainWindow"
         xmlns:pages="using:ControlCatalog.Pages"
         Title="RNGExperiments">
-    <pages:OpenGlPage />
+    <Grid 
+        >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Panel
+            Grid.Column="0"
+            Margin="10">
+            <Rectangle x:Name="image" Width="100" Height="100" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                />
+        </Panel>
+        <Panel
+            Grid.Column="1"
+            Background="#eeeeee"
+            >
+            <Grid
+                Margin="10"
+                >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Color:"
+                    />
+                <ComboBox
+                    x:Name="colorSelectedBox"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    SelectedItem="{Binding SelectedColorItem}" 
+                    MaxDropDownHeight="100"
+                    VerticalAlignment="Center"
+                    >
+                    <ComboBoxItem>Red</ComboBoxItem>
+                    <ComboBoxItem>Green</ComboBoxItem>
+                    <ComboBoxItem>Blue</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+        </Panel>
+    </Grid>
 </Window>
