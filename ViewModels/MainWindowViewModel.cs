@@ -30,25 +30,19 @@ public class MainWindowViewModel : ViewModelBase {
         SetImage();
     }
 
-    public string ImageWidth {
-        get => _imageWidth.ToString();
+    public int ImageWidth {
+        get => _imageWidth;
         set {
-            if (int.TryParse(value, out var v)) {
-                _imageWidth = v;
-                this.RaisePropertyChanged();
-                SetImage();
-            }
+            this.RaiseAndSetIfChanged(ref _imageWidth, Math.Max(value, 1));
+            SetImage();
         }
     }
 
-    public string ImageHeight {
-        get => _imageHeight.ToString();
+    public int ImageHeight {
+        get => _imageHeight;
         set {
-            if (int.TryParse(value, out var v)) {
-                _imageHeight = v;
-                this.RaisePropertyChanged();
-                SetImage();
-            }
+            this.RaiseAndSetIfChanged(ref _imageHeight, Math.Max(value, 1));
+            SetImage();
         }
     }
 
@@ -57,13 +51,11 @@ public class MainWindowViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _imageSource, value);
     }
 
-    public string RngSeed {
-        get => _rngSeed.ToString();
+    public int RngSeed {
+        get => _rngSeed;
         set {
-            if (int.TryParse(value, out var v)) {
-                _rngSeed = v;
-                SetImage();
-            }
+            this.RaiseAndSetIfChanged(ref _rngSeed, value);
+            SetImage();
         }
     }
 

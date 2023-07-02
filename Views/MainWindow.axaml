@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="550"
         x:Class="RNGExperiments.MainWindow"
         xmlns:pages="using:ControlCatalog.Pages"
-        Title="RNGExperiments">
+        Title="Random Number Generator Experiments">
     <Grid 
         >
         <Grid.ColumnDefinitions>
