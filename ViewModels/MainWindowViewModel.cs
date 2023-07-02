@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using System;
 using ReactiveUI;
+using Avalonia.Data;
 
 namespace RNGExperiments;
 
@@ -33,6 +34,10 @@ public class MainWindowViewModel : ViewModelBase {
     public int ImageWidth {
         get => _imageWidth;
         set {
+            if (value <= 0) {
+                throw new DataValidationException("Only positive numbers greater than zero are allowed.");
+            }
+
             this.RaiseAndSetIfChanged(ref _imageWidth, Math.Max(value, 1));
             SetImage();
         }
@@ -41,6 +46,10 @@ public class MainWindowViewModel : ViewModelBase {
     public int ImageHeight {
         get => _imageHeight;
         set {
+            if (value <= 0) {
+                throw new DataValidationException("Only positive numbers greater than zero are allowed.");
+            }
+            
             this.RaiseAndSetIfChanged(ref _imageHeight, Math.Max(value, 1));
             SetImage();
         }

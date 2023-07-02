@@ -4,8 +4,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="550"
         x:Class="RNGExperiments.MainWindow"
+        xmlns:converter="using:RNGExperiments"
         xmlns:pages="using:ControlCatalog.Pages"
         Title="Random Number Generator Experiments">
+    <Window.Resources>
+        <converter:NumberConverter x:Key="NumberConverter" />
+    </Window.Resources>
     <Grid 
         >
         <Grid.ColumnDefinitions>
@@ -70,7 +74,7 @@
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
-                    Text="{Binding RngSeed}"
+                    Text="{Binding RngSeed, Converter={StaticResource NumberConverter}}"
                     />
                 <TextBlock
                     Grid.Row="2"
@@ -84,7 +88,7 @@
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
-                    Text="{Binding ImageWidth}"
+                    Text="{Binding ImageWidth, Converter={StaticResource NumberConverter}}"
                     />
                 <TextBlock
                     Grid.Row="3"
@@ -97,7 +101,7 @@
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
-                    Text="{Binding ImageHeight}"
+                    Text="{Binding ImageHeight, Converter={StaticResource NumberConverter}}"
                     />
             </Grid>
         </Panel>
