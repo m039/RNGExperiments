@@ -15,6 +15,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = new MainWindowViewModel(image);
-        colorSelectedBox.SelectedIndex = 0;
+        rngSelectedBox.SelectedIndex = 0;
     }
 }

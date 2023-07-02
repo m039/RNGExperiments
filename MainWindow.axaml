@@ -28,10 +28,11 @@
                 Margin="10"
                 >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"></ColumnDefinition>
+                    <ColumnDefinition Width="80"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -40,44 +41,56 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     VerticalAlignment="Center"
-                    Text="Color:"
+                    Text="Generator:"
                     />
                 <ComboBox
-                    x:Name="colorSelectedBox"
+                    x:Name="rngSelectedBox"
                     Grid.Row="0"
                     Grid.Column="1"
-                    SelectedItem="{Binding SelectedColorItem}" 
+                    SelectedItem="{Binding SelectedRngItem}" 
                     MaxDropDownHeight="100"
                     VerticalAlignment="Center"
                     Margin="0 5"
                     >
-                    <ComboBoxItem>Red</ComboBoxItem>
-                    <ComboBoxItem>Green</ComboBoxItem>
-                    <ComboBoxItem>Blue</ComboBoxItem>
-                    <ComboBoxItem>Black</ComboBoxItem>
+                    <ComboBoxItem>LCG</ComboBoxItem>
+                    <ComboBoxItem>SystemDefault</ComboBoxItem>
                 </ComboBox>
                 <TextBlock
                     Grid.Row="1"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Seed: "
+                    Margin="0 5"
+                    />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Margin="0 5"
+                    Text="{Binding RngSeed}"
+                    />
+                <TextBlock
+                    Grid.Row="2"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="Width: "
                     Margin="0 5"
                     />
                 <TextBox
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
                     Text="{Binding ImageWidth}"
                     />
                 <TextBlock
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="Height: "
                     />
                 <TextBox
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
