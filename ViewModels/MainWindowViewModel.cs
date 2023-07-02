@@ -5,15 +5,14 @@ using Avalonia.Platform;
 using System.Runtime.InteropServices;
 using Avalonia;
 using System;
+using ReactiveUI;
 
 namespace RNGExperiments;
 
-public class MainWindowViewModel {
+public class MainWindowViewModel : ViewModelBase {
     enum RngType {
         LCG, SystemDefault
     }
-
-    Image _image;
 
     int _imageWidth = 300;
 
@@ -23,11 +22,12 @@ public class MainWindowViewModel {
 
     RngType _rngType = RngType.LCG;
 
-    Bitmap _bitmap = null;
+    Bitmap? _bitmap;
 
-    public MainWindowViewModel(Image image) {
-        _image = image;
-        UpdateImageSize();
+    IImage? _imageSource;
+
+    public MainWindowViewModel() {
+        SetImage();
     }
 
     public string ImageWidth {
@@ -35,7 +35,8 @@ public class MainWindowViewModel {
         set {
             if (int.TryParse(value, out var v)) {
                 _imageWidth = v;
-                UpdateImageSize();
+                this.RaisePropertyChanged();
+                SetImage();
             }
         }
     }
@@ -45,9 +46,15 @@ public class MainWindowViewModel {
         set {
             if (int.TryParse(value, out var v)) {
                 _imageHeight = v;
-                UpdateImageSize();
+                this.RaisePropertyChanged();
+                SetImage();
             }
         }
+    }
+
+    public IImage? ImageSource {
+        get => _imageSource;
+        set => this.RaiseAndSetIfChanged(ref _imageSource, value);
     }
 
     public string RngSeed {
@@ -68,12 +75,6 @@ public class MainWindowViewModel {
                 SetImage();
             }
         }
-    }
-
-    void UpdateImageSize() {
-        _image.Width = _imageWidth;
-        _image.Height = _imageHeight;
-        SetImage();
     }
 
     void SetImage() {
@@ -103,7 +104,7 @@ public class MainWindowViewModel {
             }
         }
         
-        _image.Source = new Bitmap(
+        _bitmap = new Bitmap(
             pixelFormat, 
             AlphaFormat.Unpremul,
             address,
@@ -111,6 +112,7 @@ public class MainWindowViewModel {
             new Vector(96, 96), 
             rowBytes
             );
+        ImageSource = _bitmap;
 
         Marshal.FreeHGlobal(address);
     }

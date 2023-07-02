@@ -15,9 +15,12 @@
         <Panel
             Grid.Column="0"
             Margin="10">
-            <Image x:Name="image" Width="100" Height="100" 
+            <Image 
+                Width="{Binding ImageWidth}"
+                Height="{Binding ImageHeight}" 
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                Source="{Binding ImageSource}"
                 />
         </Panel>
         <Panel
