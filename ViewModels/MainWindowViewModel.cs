@@ -7,11 +7,14 @@ using Avalonia;
 using System;
 using ReactiveUI;
 using Avalonia.Data;
+using System.Collections.Generic;
 
 namespace RNGExperiments;
 
-public class MainWindowViewModel : ViewModelBase {
-    enum RngType {
+public class MainWindowViewModel : ViewModelBase
+{
+    public enum RngType
+    {
         LCG, SystemDefault
     }
 
@@ -27,14 +30,36 @@ public class MainWindowViewModel : ViewModelBase {
 
     IImage? _imageSource;
 
-    public MainWindowViewModel() {
+    bool _isReady;
+
+    public MainWindowViewModel()
+    {
+        var labels = new List<RngGeneratorLabel>();
+
+        foreach (RngType rngType in Enum.GetValues(typeof(RngType)))
+        {
+            labels.Add(new RngGeneratorLabel(
+                rngType.ToString(),
+                rngType
+            ));
+        }
+
+        RngGeneratorLabels = labels;
+    }
+
+    public void Ready()
+    {
+        _isReady = true;
         SetImage();
     }
 
-    public int ImageWidth {
+    public int ImageWidth
+    {
         get => _imageWidth;
-        set {
-            if (value <= 0) {
+        set
+        {
+            if (value <= 0)
+            {
                 throw new DataValidationException("Only positive numbers greater than zero are allowed.");
             }
 
@@ -43,43 +68,57 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public int ImageHeight {
+    public int ImageHeight
+    {
         get => _imageHeight;
-        set {
-            if (value <= 0) {
+        set
+        {
+            if (value <= 0)
+            {
                 throw new DataValidationException("Only positive numbers greater than zero are allowed.");
             }
-            
+
             this.RaiseAndSetIfChanged(ref _imageHeight, Math.Max(value, 1));
             SetImage();
         }
     }
 
-    public IImage? ImageSource {
+    public IImage? ImageSource
+    {
         get => _imageSource;
         set => this.RaiseAndSetIfChanged(ref _imageSource, value);
     }
 
-    public int RngSeed {
+    public int RngSeed
+    {
         get => _rngSeed;
-        set {
+        set
+        {
             this.RaiseAndSetIfChanged(ref _rngSeed, value);
             SetImage();
         }
     }
 
-    public object SelectedRngItem {
-        set {            
-            if (value is ContentControl control) {
-                var text = control.GetValue(ContentControl.ContentProperty)?.ToString();
-                _rngType = (RngType)Enum.Parse(typeof(RngType), text ?? RngType.LCG.ToString(), true);
-                SetImage();
-            }
+    public RngGeneratorLabel SelectedRngItem
+    {
+        set
+        {
+            _rngType = value.RngType;
+            SetImage();
         }
     }
 
-    void SetImage() {
-        if (_bitmap != null) {
+    public IEnumerable<RngGeneratorLabel> RngGeneratorLabels { get; }
+
+    void SetImage()
+    {
+        if (!_isReady)
+        {
+            return;
+        }
+
+        if (_bitmap != null)
+        {
             _bitmap.Dispose();
         }
 
@@ -90,11 +129,14 @@ public class MainWindowViewModel : ViewModelBase {
         var address = Marshal.AllocHGlobal(totalBytes);
         var rng = CreateRNG();
 
-        unsafe {
-            byte *p = (byte*)address.ToPointer();
+        unsafe
+        {
+            byte* p = (byte*)address.ToPointer();
 
-            for (int y = 0; y < _imageHeight; y++) {
-                for (int x = 0; x < _imageWidth; x++) {
+            for (int y = 0; y < _imageHeight; y++)
+            {
+                for (int x = 0; x < _imageWidth; x++)
+                {
                     var index = (_imageHeight - y - 1) * _imageWidth * bpp + x * bpp;
                     var color = GetColorAt(x, y, rng);
                     p[index + 0] = color.R;
@@ -104,13 +146,13 @@ public class MainWindowViewModel : ViewModelBase {
                 }
             }
         }
-        
+
         _bitmap = new Bitmap(
-            pixelFormat, 
+            pixelFormat,
             AlphaFormat.Unpremul,
             address,
             new PixelSize(_imageWidth, _imageHeight),
-            new Vector(96, 96), 
+            new Vector(96, 96),
             rowBytes
             );
         ImageSource = _bitmap;
@@ -118,8 +160,10 @@ public class MainWindowViewModel : ViewModelBase {
         Marshal.FreeHGlobal(address);
     }
 
-    IRng CreateRNG() {
-        switch (_rngType) {
+    IRng CreateRNG()
+    {
+        switch (_rngType)
+        {
             case RngType.SystemDefault:
                 return new SystemRng(_rngSeed);
             default:
@@ -128,19 +172,23 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    Color GetColorAt(int x, int y, IRng rng) {
+    Color GetColorAt(int x, int y, IRng rng)
+    {
         var value = (byte)(0xff * rng.Random());
         return new Color(0xff, value, value, value);
     }
 
-    interface IRng {
+    interface IRng
+    {
         double Random();
     }
 
-    class SystemRng : IRng {
+    class SystemRng : IRng
+    {
         Random _random;
 
-        public SystemRng(int seed) {
+        public SystemRng(int seed)
+        {
             _random = new Random(seed);
         }
 
@@ -150,20 +198,36 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    class LCG : IRng {
+    class LCG : IRng
+    {
         const int Modulus = 1 << 31;
         const int Multiplier = 1103515245;
         const int Increment = 12345;
 
         int _seed;
 
-        public LCG(int seed) {
+        public LCG(int seed)
+        {
             _seed = seed;
         }
 
-        public double Random() {
+        public double Random()
+        {
             _seed = (Multiplier * _seed + Increment) % Modulus;
             return _seed / (double)Modulus;
         }
+    }
+
+    public class RngGeneratorLabel
+    {
+        public RngGeneratorLabel(string description, MainWindowViewModel.RngType rngType)
+        {
+            Description = description;
+            RngType = rngType;
+        }
+
+        public string Description { get; }
+
+        public MainWindowViewModel.RngType RngType { get; }
     }
 }

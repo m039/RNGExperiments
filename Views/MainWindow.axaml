@@ -6,11 +6,11 @@
     d:DesignWidth="600"
     d:DesignHeight="550"
     x:Class="RNGExperiments.MainWindow"
-    xmlns:converter="using:RNGExperiments"
     xmlns:pages="using:ControlCatalog.Pages"
+    xmlns:local="using:RNGExperiments"
     Title="Random Number Generator Experiments">
     <Window.Resources>
-        <converter:NumberConverter x:Key="NumberConverter" />
+        <local:NumberConverter x:Key="NumberConverter" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -42,15 +42,20 @@
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="Generator:" />
-                <ComboBox x:Name="rngSelectedBox"
+                <ComboBox
+                    x:Name="rngSelectedBox"
+                    ItemsSource="{Binding RngGeneratorLabels}"
                     Grid.Row="0"
                     Grid.Column="1"
                     SelectedItem="{Binding SelectedRngItem}"
                     MaxDropDownHeight="100"
                     VerticalAlignment="Center"
                     Margin="0 5">
-                    <ComboBoxItem>LCG</ComboBoxItem>
-                    <ComboBoxItem>SystemDefault</ComboBoxItem>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Description}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
                 <TextBlock Grid.Row="1"
                     Grid.Column="0"
