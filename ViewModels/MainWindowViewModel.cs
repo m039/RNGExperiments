@@ -126,6 +126,8 @@ public class MainWindowViewModel : ViewModelBase
 
     public IEnumerable<RngGeneratorLabel> RngGeneratorLabels { get; }
 
+    public event System.Action? OnGenerationFinished;
+
     async void SetImage()
     {
         if (!_isReady)
@@ -208,6 +210,7 @@ public class MainWindowViewModel : ViewModelBase
 
             InfoText = $"The image is generated in {stopWatch.ElapsedMilliseconds} ms.";
             IsGenerating = false;
+            OnGenerationFinished?.Invoke();
         }
     }
 

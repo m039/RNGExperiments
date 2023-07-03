@@ -12,34 +12,9 @@
     <Window.Resources>
         <local:NumberConverter x:Key="NumberConverter" />
     </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="200"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Panel Grid.Column="0">
-            <Panel ZIndex="1"
-                Height="50"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Bottom"
-                Margin="10"
-                Background="#aaeeeeee">
-                <TextBlock Margin="10"
-                    Text="{Binding InfoText}"
-                    VerticalAlignment="Center"/>
-                <ProgressBar
-                    IsIndeterminate="True"
-                    IsVisible="{Binding IsGenerating}"
-                    VerticalAlignment="Bottom"/>
-            </Panel>
-            <Image Width="{Binding ImageWidth}"
-                Height="{Binding ImageHeight}"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Source="{Binding ImageSource}"
-                ZIndex="0" />
-        </Panel>
-        <Panel Grid.Column="1"
+    <DockPanel>
+        <Panel DockPanel.Dock="Right"
+            Width="200"
             Background="#eeeeee">
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
@@ -101,5 +76,37 @@
                     Text="{Binding ImageHeight, Converter={StaticResource NumberConverter}}" />
             </Grid>
         </Panel>
-    </Grid>
+        <Panel x:Name="imagePanel">
+            <Panel ZIndex="1"
+                Height="50"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Margin="10"
+                Background="#aaeeeeee">
+                <TextBlock Margin="10"
+                    Text="{Binding InfoText}"
+                    VerticalAlignment="Center"/>
+                <ProgressBar IsIndeterminate="True"
+                    IsVisible="{Binding IsGenerating}"
+                    VerticalAlignment="Bottom"/>
+            </Panel>
+            <ScrollViewer x:Name="imageScrollViewer"
+                HorizontalScrollBarVisibility="Visible"
+                VerticalScrollBarVisibility="Visible"
+                ZIndex="0">
+                <ScrollViewer.Styles>
+                    <Style Selector="Thumb">
+                        <Setter Property="Background"
+                            Value="White"/>
+                    </Style>
+                </ScrollViewer.Styles>
+                <Image
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="{Binding ImageWidth}"
+                    Height="{Binding ImageHeight}"
+                    Source="{Binding ImageSource}" />
+            </ScrollViewer>
+        </Panel>
+    </DockPanel>
 </Window>
