@@ -1,39 +1,33 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="550"
-        x:Class="RNGExperiments.MainWindow"
-        xmlns:converter="using:RNGExperiments"
-        xmlns:pages="using:ControlCatalog.Pages"
-        Title="Random Number Generator Experiments">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignWidth="600"
+    d:DesignHeight="550"
+    x:Class="RNGExperiments.MainWindow"
+    xmlns:converter="using:RNGExperiments"
+    xmlns:pages="using:ControlCatalog.Pages"
+    Title="Random Number Generator Experiments">
     <Window.Resources>
         <converter:NumberConverter x:Key="NumberConverter" />
     </Window.Resources>
-    <Grid 
-        >
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="200"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Panel
-            Grid.Column="0"
+        <Panel Grid.Column="0"
             Margin="10">
-            <Image 
-                Width="{Binding ImageWidth}"
-                Height="{Binding ImageHeight}" 
+            <Image Width="{Binding ImageWidth}"
+                Height="{Binding ImageHeight}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Source="{Binding ImageSource}"
-                />
+                Source="{Binding ImageSource}" />
         </Panel>
-        <Panel
-            Grid.Column="1"
-            Background="#eeeeee"
-            >
-            <Grid
-                Margin="10"
-                >
+        <Panel Grid.Column="1"
+            Background="#eeeeee">
+            <Grid Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -44,65 +38,49 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock
-                    Grid.Row="0"
+                <TextBlock Grid.Row="0"
                     Grid.Column="0"
                     VerticalAlignment="Center"
-                    Text="Generator:"
-                    />
-                <ComboBox
-                    x:Name="rngSelectedBox"
+                    Text="Generator:" />
+                <ComboBox x:Name="rngSelectedBox"
                     Grid.Row="0"
                     Grid.Column="1"
-                    SelectedItem="{Binding SelectedRngItem}" 
+                    SelectedItem="{Binding SelectedRngItem}"
                     MaxDropDownHeight="100"
                     VerticalAlignment="Center"
-                    Margin="0 5"
-                    >
+                    Margin="0 5">
                     <ComboBoxItem>LCG</ComboBoxItem>
                     <ComboBoxItem>SystemDefault</ComboBoxItem>
                 </ComboBox>
-                <TextBlock
-                    Grid.Row="1"
+                <TextBlock Grid.Row="1"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="Seed: "
-                    Margin="0 5"
-                    />
-                <TextBox
-                    Grid.Row="1"
+                    Margin="0 5" />
+                <TextBox Grid.Row="1"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
-                    Text="{Binding RngSeed, Converter={StaticResource NumberConverter}}"
-                    />
-                <TextBlock
-                    Grid.Row="2"
+                    Text="{Binding RngSeed, Converter={StaticResource NumberConverter}}" />
+                <TextBlock Grid.Row="2"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="Width: "
-                    Margin="0 5"
-                    />
-                <TextBox
-                    Grid.Row="2"
+                    Margin="0 5" />
+                <TextBox Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
-                    Text="{Binding ImageWidth, Converter={StaticResource NumberConverter}}"
-                    />
-                <TextBlock
-                    Grid.Row="3"
+                    Text="{Binding ImageWidth, Converter={StaticResource NumberConverter}}" />
+                <TextBlock Grid.Row="3"
                     Grid.Column="0"
                     VerticalAlignment="Center"
-                    Text="Height: "
-                    />
-                <TextBox
-                    Grid.Row="3"
+                    Text="Height: " />
+                <TextBox Grid.Row="3"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
-                    Text="{Binding ImageHeight, Converter={StaticResource NumberConverter}}"
-                    />
+                    Text="{Binding ImageHeight, Converter={StaticResource NumberConverter}}" />
             </Grid>
         </Panel>
     </Grid>
