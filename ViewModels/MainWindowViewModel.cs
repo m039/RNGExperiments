@@ -8,6 +8,9 @@ using System;
 using ReactiveUI;
 using Avalonia.Data;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace RNGExperiments;
 
@@ -18,9 +21,9 @@ public class MainWindowViewModel : ViewModelBase
         LCG, SystemDefault
     }
 
-    int _imageWidth = 300;
+    int _imageWidth = 3000;
 
-    int _imageHeight = 300;
+    int _imageHeight = 3000;
 
     int _rngSeed = 0;
 
@@ -30,7 +33,13 @@ public class MainWindowViewModel : ViewModelBase
 
     IImage? _imageSource;
 
+    string _infoText = string.Empty;
+
     bool _isReady;
+
+    bool _isGenerating;
+
+    CancellationTokenSource? _cancellationToken;
 
     public MainWindowViewModel()
     {
@@ -89,6 +98,18 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _imageSource, value);
     }
 
+    public string InfoText
+    {
+        get => _infoText;
+        set => this.RaiseAndSetIfChanged(ref _infoText, value);
+    }
+
+    public bool IsGenerating
+    {
+        get => _isGenerating;
+        set => this.RaiseAndSetIfChanged(ref _isGenerating, value);
+    }
+
     public int RngSeed
     {
         get => _rngSeed;
@@ -110,54 +131,89 @@ public class MainWindowViewModel : ViewModelBase
 
     public IEnumerable<RngGeneratorLabel> RngGeneratorLabels { get; }
 
-    void SetImage()
+    async void SetImage()
     {
         if (!_isReady)
         {
             return;
         }
 
+        _cancellationToken?.Cancel();
+        _cancellationToken = new CancellationTokenSource();
+        var token = _cancellationToken.Token;
+
+        ImageSource = null;
+        IsGenerating = true;
+        InfoText = "Generating...";
+
         if (_bitmap != null)
         {
             _bitmap.Dispose();
+            _bitmap = null;
         }
+
+        var stopWatch = new Stopwatch();
 
         var pixelFormat = PixelFormat.Rgba8888;
         var bpp = 4;
-        var rowBytes = _imageWidth * bpp;
-        var totalBytes = _imageHeight * rowBytes;
+        var imageWidth = _imageWidth;
+        var imageHeight = _imageHeight;
+        var rowBytes = imageWidth * bpp;
+        var totalBytes = imageHeight * rowBytes;
         var address = Marshal.AllocHGlobal(totalBytes);
         var rng = CreateRNG();
 
-        unsafe
+        await Task.Run(() =>
         {
-            byte* p = (byte*)address.ToPointer();
+            stopWatch.Start();
 
-            for (int y = 0; y < _imageHeight; y++)
+            unsafe
             {
-                for (int x = 0; x < _imageWidth; x++)
+                byte* p = (byte*)address.ToPointer();
+
+                for (int y = 0; y < imageHeight; y++)
                 {
-                    var index = (_imageHeight - y - 1) * _imageWidth * bpp + x * bpp;
-                    var color = GetColorAt(x, y, rng);
-                    p[index + 0] = color.R;
-                    p[index + 1] = color.G;
-                    p[index + 2] = color.B;
-                    p[index + 3] = color.A;
+                    for (int x = 0; x < imageWidth; x++)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
+                        var index = (imageHeight - y - 1) * imageWidth * bpp + x * bpp;
+                        var color = GetColorAt(x, y, rng);
+                        p[index + 0] = color.R;
+                        p[index + 1] = color.G;
+                        p[index + 2] = color.B;
+                        p[index + 3] = color.A;
+                    }
                 }
             }
+
+            stopWatch.Stop();
+        }, token);
+
+        if (token.IsCancellationRequested)
+        {
+            Marshal.FreeHGlobal(address);
         }
-
-        _bitmap = new Bitmap(
-            pixelFormat,
-            AlphaFormat.Unpremul,
-            address,
-            new PixelSize(_imageWidth, _imageHeight),
-            new Vector(96, 96),
-            rowBytes
+        else
+        {
+            _bitmap = new Bitmap(
+                pixelFormat,
+                AlphaFormat.Unpremul,
+                address,
+                new PixelSize(_imageWidth, _imageHeight),
+                new Vector(96, 96),
+                rowBytes
             );
-        ImageSource = _bitmap;
+            ImageSource = _bitmap;
 
-        Marshal.FreeHGlobal(address);
+            Marshal.FreeHGlobal(address);
+
+            InfoText = $"The image is generated in {stopWatch.ElapsedMilliseconds} ms.";
+            IsGenerating = false;
+        }
     }
 
     IRng CreateRNG()
