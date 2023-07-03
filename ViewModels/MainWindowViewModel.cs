@@ -16,11 +16,6 @@ namespace RNGExperiments;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    public enum RngType
-    {
-        LCG, SystemDefault
-    }
-
     int _imageWidth = 3000;
 
     int _imageHeight = 3000;
@@ -161,7 +156,7 @@ public class MainWindowViewModel : ViewModelBase
         var rowBytes = imageWidth * bpp;
         var totalBytes = imageHeight * rowBytes;
         var address = Marshal.AllocHGlobal(totalBytes);
-        var rng = CreateRNG();
+        var rng = _rngType.Create(_rngSeed);
 
         await Task.Run(() =>
         {
@@ -216,67 +211,15 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    IRng CreateRNG()
-    {
-        switch (_rngType)
-        {
-            case RngType.SystemDefault:
-                return new SystemRng(_rngSeed);
-            default:
-            case RngType.LCG:
-                return new LCG(_rngSeed);
-        }
-    }
-
     Color GetColorAt(int x, int y, IRng rng)
     {
         var value = (byte)(0xff * rng.Random());
         return new Color(0xff, value, value, value);
     }
 
-    interface IRng
-    {
-        double Random();
-    }
-
-    class SystemRng : IRng
-    {
-        Random _random;
-
-        public SystemRng(int seed)
-        {
-            _random = new Random(seed);
-        }
-
-        public double Random()
-        {
-            return _random.NextDouble();
-        }
-    }
-
-    class LCG : IRng
-    {
-        const int Modulus = 1 << 31;
-        const int Multiplier = 1103515245;
-        const int Increment = 12345;
-
-        int _seed;
-
-        public LCG(int seed)
-        {
-            _seed = seed;
-        }
-
-        public double Random()
-        {
-            _seed = (Multiplier * _seed + Increment) % Modulus;
-            return _seed / (double)Modulus;
-        }
-    }
-
     public class RngGeneratorLabel
     {
-        public RngGeneratorLabel(string description, MainWindowViewModel.RngType rngType)
+        public RngGeneratorLabel(string description, RngType rngType)
         {
             Description = description;
             RngType = rngType;
@@ -284,6 +227,6 @@ public class MainWindowViewModel : ViewModelBase
 
         public string Description { get; }
 
-        public MainWindowViewModel.RngType RngType { get; }
+        public RngType RngType { get; }
     }
 }
