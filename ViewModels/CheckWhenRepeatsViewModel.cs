@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using ReactiveUI;
 
 namespace RNGExperiments;
@@ -30,6 +31,10 @@ public class CheckWhenRepeatsViewModel : ViewModelBase
         {
             _cancellationToken.Cancel();
         });
+
+        if (Design.IsDesignMode)
+            return;
+
         CheckWhenRepeats();
     }
 
