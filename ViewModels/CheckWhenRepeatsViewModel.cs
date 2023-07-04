@@ -9,13 +9,13 @@ namespace RNGExperiments;
 
 public class CheckWhenRepeatsViewModel : ViewModelBase
 {
-    RngType _rngType;
+    readonly RngType _rngType;
 
-    int _rngSeed;
+    readonly int _rngSeed;
 
     string _infoText = string.Empty;
 
-    CancellationTokenSource _cancellationToken = new();
+    readonly CancellationTokenSource _cancellationToken = new();
 
     bool _isRunning;
 
