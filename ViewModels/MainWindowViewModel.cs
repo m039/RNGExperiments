@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Reactive;
 
 namespace RNGExperiments;
 
@@ -36,6 +37,8 @@ public class MainWindowViewModel : ViewModelBase
 
     CancellationTokenSource? _cancellationToken;
 
+    RngGeneratorLabel? _selectedRngItem;
+
     public MainWindowViewModel()
     {
         var labels = new List<RngGeneratorLabel>();
@@ -43,12 +46,20 @@ public class MainWindowViewModel : ViewModelBase
         foreach (RngType rngType in Enum.GetValues(typeof(RngType)))
         {
             labels.Add(new RngGeneratorLabel(
-                rngType.ToString(),
+                rngType.GetDescription(),
                 rngType
             ));
         }
 
         RngGeneratorLabels = labels;
+
+        CheckWhenRepeats = ReactiveCommand.Create(() =>
+        {
+            return new CheckWhenRepeatsViewModel(
+                _rngType,
+                _rngSeed
+            );
+        }, this.WhenAnyValue(x => x.SelectedRngItem, x => x != null && x.RngType.CanCheckWhenRepeats()));
     }
 
     public void Ready()
@@ -115,12 +126,19 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public RngGeneratorLabel SelectedRngItem
+    public ReactiveCommand<Unit, CheckWhenRepeatsViewModel> CheckWhenRepeats { get; }
+
+    public RngGeneratorLabel? SelectedRngItem
     {
+        get => _selectedRngItem;
         set
         {
-            _rngType = value.RngType;
-            SetImage();
+            this.RaiseAndSetIfChanged(ref _selectedRngItem, value);
+            if (value != null)
+            {
+                _rngType = value.RngType;
+                SetImage();
+            }
         }
     }
 

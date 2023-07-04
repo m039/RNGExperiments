@@ -8,7 +8,8 @@
     x:Class="RNGExperiments.MainWindow"
     xmlns:pages="using:ControlCatalog.Pages"
     xmlns:local="using:RNGExperiments"
-    Title="Random Number Generator Experiments">
+    Title="Random Number Generator Experiments"
+    WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <local:NumberConverter x:Key="NumberConverter" />
     </Window.Resources>
@@ -22,6 +23,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -74,6 +76,9 @@
                     VerticalAlignment="Center"
                     Margin="0 5"
                     Text="{Binding ImageHeight, Converter={StaticResource NumberConverter}}" />
+                <Button Grid.ColumnSpan="2" Grid.Row="4" Margin="0 5" Command="{Binding CheckWhenRepeats}">
+                    Check When Repeats
+                </Button>
             </Grid>
         </Panel>
         <Panel x:Name="imagePanel">
@@ -100,8 +105,7 @@
                             Value="White"/>
                     </Style>
                 </ScrollViewer.Styles>
-                <Image
-                    HorizontalAlignment="Center"
+                <Image HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Width="{Binding ImageWidth}"
                     Height="{Binding ImageHeight}"

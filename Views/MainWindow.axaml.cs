@@ -7,21 +7,34 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using ReactiveUI;
 
 namespace RNGExperiments;
 
-public partial class MainWindow : Window
+public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 {
     public MainWindow()
     {
         InitializeComponent();
-        var vm = new MainWindowViewModel();
-        vm.OnGenerationFinished += () => {
-            imagePanel.Children.Remove(imageScrollViewer);
-            imagePanel.Children.Add(imageScrollViewer);
+
+        this.WhenActivated(action =>
+        {
+            ViewModel!.OnGenerationFinished += () =>
+            {
+                imagePanel.Children.Remove(imageScrollViewer);
+                imagePanel.Children.Add(imageScrollViewer);
+            };
+            rngSelectedBox.SelectedIndex = 0;
+            ViewModel!.Ready();
+            action(ViewModel!.CheckWhenRepeats.Subscribe(ShowDialog));
+        });
+    }
+
+    async void ShowDialog(CheckWhenRepeatsViewModel vm) {
+        var dialog = new CheckWhenRepeatsWindow {
+            DataContext = vm
         };
-        DataContext = vm;
-        rngSelectedBox.SelectedIndex = 0;
-        vm.Ready();
+        await dialog.ShowDialog(this);
     }
 }
