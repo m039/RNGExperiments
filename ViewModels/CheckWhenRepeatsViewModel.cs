@@ -97,7 +97,7 @@ public class CheckWhenRepeatsViewModel : ViewModelBase
         IsRunning = false;
         if (!token.IsCancellationRequested)
         {
-            InfoText = $"{_rngType.GetDescription()} starts repeat itself in {stopWatch.Elapsed.ToString(@"hh\:mm\:ss")} with {_iterations} iterations";
+            InfoText = $"{_rngType.GetDescription()} starts repeat itself in {stopWatch.Elapsed:hh\\:mm\\:ss} with {_iterations} iterations";
         }
     }
 }
