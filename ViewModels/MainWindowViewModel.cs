@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Reactive;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 
 namespace RNGExperiments;
 
@@ -61,9 +63,20 @@ public class MainWindowViewModel : ViewModelBase
         }, this.WhenAnyValue(x => x.SelectedRngItem,
             x => x != null && x.RngType.CanCheckWhenRepeats()));
 
-        SaveImage = ReactiveCommand.Create(() =>
+        SaveImage = ReactiveCommand.Create(async () =>
         {
-            System.Console.WriteLine("Save to Disk");
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+                desktop.MainWindow?.StorageProvider is not { } provider)
+                throw new NullReferenceException("Missing StorageProvider instance.");
+
+            var storageFile = await provider.SaveFilePickerAsync(new FilePickerSaveOptions()
+            {
+                Title = "Save Image"
+            });
+
+            if (_bitmap != null && storageFile != null) {
+                _bitmap.Save(storageFile.Path.AbsolutePath);
+            }
         }, this.WhenAnyValue(x => x.ImageSource, (IImage? image) => image != null));
     }
 
@@ -133,7 +146,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, CheckWhenRepeatsViewModel> CheckWhenRepeats { get; }
 
-    public ReactiveCommand<Unit, Unit> SaveImage { get; }
+    public ReactiveCommand<Unit, Task> SaveImage { get; }
 
     public RngGeneratorLabel? SelectedRngItem
     {
