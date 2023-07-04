@@ -120,6 +120,10 @@ class Xorshift128 : IRng
 
     public Xorshift128(int seed)
     {
+        if (seed == 0) {
+            seed = 1;
+        }
+
         x3 = seed;
         _initSeed = seed;
     }

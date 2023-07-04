@@ -18,6 +18,6 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.0-rc2.1" />
 
-    <EmbeddedResource Include="teapot.bin" />
+    <EmbeddedResource Include="OpenGL/teapot.bin" />
   </ItemGroup>
 </Project>
