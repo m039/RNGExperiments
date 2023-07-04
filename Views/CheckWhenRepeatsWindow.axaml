@@ -5,41 +5,43 @@
   mc:Ignorable="d"
   Width="600"
   Height="200"
+  MinHeight="150"
   x:Class="RNGExperiments.CheckWhenRepeatsWindow"
   WindowStartupLocation="CenterOwner"
   Title="Check When Generator Repeats">
-  <Panel>
-    <ProgressBar IsIndeterminate="True"
-      HorizontalAlignment="Stretch"
-      VerticalAlignment="Top"
-      IsVisible="{Binding IsRunning}"/>
-    <Grid HorizontalAlignment="Stretch"
-      VerticalAlignment="Bottom"
-      Margin="15">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-      <Button HorizontalAlignment="Stretch"
-        Command="{Binding Cancel}"
-        IsVisible="{Binding IsRunning}">
-        <TextBlock HorizontalAlignment="Center"
-          Text="Cancel"/>
-      </Button>
-      <Button HorizontalAlignment="Stretch"
-        Command="{Binding Cancel}"
-        IsVisible="{Binding !IsRunning}">
-        <TextBlock HorizontalAlignment="Center"
-          Text="Back"/>
-      </Button>
-    </Grid>
-    <TextBlock FontSize="20"
-      TextWrapping="Wrap"
-      Margin="20"
-      Text="{Binding InfoText}"
-      HorizontalAlignment="Center"
-      VerticalAlignment="Center" />
-  </Panel>
+	<DockPanel>
+		<ProgressBar IsIndeterminate="True"
+		  HorizontalAlignment="Stretch"
+		  DockPanel.Dock="Top"
+		  IsVisible="{Binding IsRunning}"/>
+		<Grid HorizontalAlignment="Stretch"
+		  DockPanel.Dock="Bottom"
+		  Margin="15 0 15 15">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Button HorizontalAlignment="Stretch"
+			  Command="{Binding Cancel}"
+			  IsVisible="{Binding IsRunning}">
+				<TextBlock HorizontalAlignment="Center"
+				  Text="Cancel"/>
+			</Button>
+			<Button HorizontalAlignment="Stretch"
+			  Command="{Binding Cancel}"
+			  IsVisible="{Binding !IsRunning}">
+				<TextBlock HorizontalAlignment="Center"
+				  Text="Back"/>
+			</Button>
+		</Grid>
+		<Panel Margin="15 0">
+			<TextBlock FontSize="20"
+				TextWrapping="Wrap"
+				Text="{Binding InfoText}"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"/>
+		</Panel>
+	</DockPanel>
 </Window>

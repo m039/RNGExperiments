@@ -33,7 +33,7 @@ public static class RngTypeExt
                 return new SystemRng(seed);
             default:
             case RngType.LCG:
-                return new LCG(seed);
+                return new LCG((uint)seed);
         }
     }
 
@@ -78,17 +78,17 @@ class SystemRng : IRng
 
 class LCG : IRng
 {
-    const int Modulus = 1 << 31;
-    const int Multiplier = 1103515245;
-    const int Increment = 12345;
+    const uint Modulus = (uint)1 << 31;
+    const uint Multiplier = 1103515245;
+    const uint Increment = 12345;
 
-    int _seed;
+    uint _seed;
 
-    int _initSeed;
+    uint _initSeed;
 
     bool _isStartedRepeat;
 
-    public LCG(int seed)
+    public LCG(uint seed)
     {
         _seed = seed;
         _initSeed = seed;
