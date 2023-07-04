@@ -32,7 +32,7 @@
         Command="{Binding Cancel}"
         IsVisible="{Binding !IsRunning}">
         <TextBlock HorizontalAlignment="Center"
-          Text="Return"/>
+          Text="Back"/>
       </Button>
     </Grid>
     <TextBlock FontSize="20"

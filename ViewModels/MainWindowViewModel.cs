@@ -1,5 +1,4 @@
 using Avalonia.Media;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System.Runtime.InteropServices;
@@ -59,7 +58,13 @@ public class MainWindowViewModel : ViewModelBase
                 _rngType,
                 _rngSeed
             );
-        }, this.WhenAnyValue(x => x.SelectedRngItem, x => x != null && x.RngType.CanCheckWhenRepeats()));
+        }, this.WhenAnyValue(x => x.SelectedRngItem,
+            x => x != null && x.RngType.CanCheckWhenRepeats()));
+
+        SaveImage = ReactiveCommand.Create(() =>
+        {
+            System.Console.WriteLine("Save to Disk");
+        }, this.WhenAnyValue(x => x.ImageSource, (IImage? image) => image != null));
     }
 
     public void Ready()
@@ -127,6 +132,8 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     public ReactiveCommand<Unit, CheckWhenRepeatsViewModel> CheckWhenRepeats { get; }
+
+    public ReactiveCommand<Unit, Unit> SaveImage { get; }
 
     public RngGeneratorLabel? SelectedRngItem
     {

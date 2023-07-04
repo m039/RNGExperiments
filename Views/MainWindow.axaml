@@ -28,6 +28,7 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0"
                     Grid.Column="0"
@@ -76,8 +77,21 @@
                     VerticalAlignment="Center"
                     Margin="0 5"
                     Text="{Binding ImageHeight, Converter={StaticResource NumberConverter}}" />
-                <Button Grid.ColumnSpan="2" Grid.Row="4" Margin="0 5" Command="{Binding CheckWhenRepeats}">
+                <Button Grid.ColumnSpan="2"
+                    Grid.Row="4"
+                    Margin="0 5"
+                    Command="{Binding CheckWhenRepeats}"
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Stretch">
                     Check When Repeats
+                </Button>
+                <Button Grid.ColumnSpan="2"
+                    Grid.Row="5"
+                    Margin="0 5"
+                    Command="{Binding SaveImage}"
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Stretch">
+                    Save Image
                 </Button>
             </Grid>
         </Panel>
