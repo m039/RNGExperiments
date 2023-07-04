@@ -1,22 +1,22 @@
 <Window xmlns="https://github.com/avaloniaui"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  mc:Ignorable="d"
-  Width="600"
-  Height="200"
-  MinHeight="150"
-  x:Class="RNGExperiments.CheckWhenRepeatsWindow"
-  WindowStartupLocation="CenterOwner"
-  Title="Check When Generator Repeats">
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Width="600"
+	Height="200"
+	MinHeight="150"
+	x:Class="RNGExperiments.CheckWhenRepeatsWindow"
+	WindowStartupLocation="CenterOwner"
+	Title="Check When Generator Repeats">
 	<DockPanel>
 		<ProgressBar IsIndeterminate="True"
-		  HorizontalAlignment="Stretch"
-		  DockPanel.Dock="Top"
-		  IsVisible="{Binding IsRunning}"/>
+			HorizontalAlignment="Stretch"
+			DockPanel.Dock="Top"
+			IsVisible="{Binding IsRunning}"/>
 		<Grid HorizontalAlignment="Stretch"
-		  DockPanel.Dock="Bottom"
-		  Margin="15 0 15 15">
+			DockPanel.Dock="Bottom"
+			Margin="15 0 15 15">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
@@ -24,16 +24,16 @@
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<Button HorizontalAlignment="Stretch"
-			  Command="{Binding Cancel}"
-			  IsVisible="{Binding IsRunning}">
+				Command="{Binding Cancel}"
+				IsVisible="{Binding IsRunning}">
 				<TextBlock HorizontalAlignment="Center"
-				  Text="Cancel"/>
+					Text="Cancel"/>
 			</Button>
 			<Button HorizontalAlignment="Stretch"
-			  Command="{Binding Cancel}"
-			  IsVisible="{Binding !IsRunning}">
+				Command="{Binding Cancel}"
+				IsVisible="{Binding !IsRunning}">
 				<TextBlock HorizontalAlignment="Center"
-				  Text="Back"/>
+					Text="Back"/>
 			</Button>
 		</Grid>
 		<Panel Margin="15 0">
