@@ -11,41 +11,31 @@ public static class RngTypeExt
 {
     public static string GetDescription(this RngType type)
     {
-        switch (type)
+        return type switch
         {
-            case RngType.Xorshift128:
-                return "Xorshift128";
-            case RngType.SystemDefault:
-                return "System.Random";
-            default:
-            case RngType.LCG:
-                return "LCG";
-        }
+            RngType.Xorshift128 => "Xorshift128",
+            RngType.SystemDefault => "System.Random",
+            _ => "LCG",
+        };
     }
 
     public static IRng Create(this RngType type, int seed)
     {
-        switch (type)
+        return type switch
         {
-            case RngType.Xorshift128:
-                return new Xorshift128(seed);
-            case RngType.SystemDefault:
-                return new SystemRng(seed);
-            default:
-            case RngType.LCG:
-                return new LCG((uint)seed);
-        }
+            RngType.Xorshift128 => new Xorshift128(seed),
+            RngType.SystemDefault => new SystemRng(seed),
+            _ => new LCG((uint)seed),
+        };
     }
 
     public static bool CanCheckWhenRepeats(this RngType type)
     {
-        switch (type)
+        return type switch
         {
-            case RngType.LCG:
-                return true;
-            default:
-                return false;
-        }
+            RngType.LCG => true,
+            _ => false,
+        };
     }
 }
 
@@ -58,7 +48,7 @@ public interface IRng
 
 class SystemRng : IRng
 {
-    Random _random;
+    readonly Random _random;
 
     public SystemRng(int seed)
     {
@@ -84,7 +74,7 @@ class LCG : IRng
 
     uint _seed;
 
-    uint _initSeed;
+    readonly uint _initSeed;
 
     bool _isStartedRepeat;
 
@@ -114,7 +104,7 @@ class Xorshift128 : IRng
 {
     int x0, x1, x2, x3;
 
-    int _initSeed;
+    readonly int _initSeed;
 
     bool _isStartedRepeat;
 
