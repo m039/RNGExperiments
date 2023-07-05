@@ -4,7 +4,7 @@ namespace RNGExperiments;
 
 public enum RngType
 {
-    LCG, SystemDefault, Xorshift128
+    LCG, SystemDefault, Xorshift32, Xorshift128
 }
 
 public static class RngTypeExt
@@ -13,9 +13,8 @@ public static class RngTypeExt
     {
         return type switch
         {
-            RngType.Xorshift128 => "Xorshift128",
             RngType.SystemDefault => "System.Random",
-            _ => "LCG",
+            _ => type.ToString(),
         };
     }
 
@@ -25,6 +24,7 @@ public static class RngTypeExt
         {
             RngType.Xorshift128 => new Xorshift128(seed),
             RngType.SystemDefault => new SystemRng(seed),
+            RngType.Xorshift32 => new Xorshift32((uint) seed),
             _ => new LCG((uint)seed),
         };
     }
@@ -34,6 +34,7 @@ public static class RngTypeExt
         return type switch
         {
             RngType.LCG => true,
+            RngType.Xorshift32 => true,
             _ => false,
         };
     }
@@ -97,6 +98,45 @@ class LCG : IRng
             _isStartedRepeat = true;
         }
         return _seed / (double)Modulus;
+    }
+}
+
+class Xorshift32 : IRng
+{
+    readonly uint _initSeed;
+
+    uint _state;
+
+    bool _isStartedRepeat;
+
+    public Xorshift32(uint seed) {
+        if (seed == 0) {
+            seed = 1;
+        }
+
+        _state = seed;
+        _initSeed = seed;
+    }
+
+    public bool IsStartedRepeat()
+    {
+        return _isStartedRepeat;
+    }
+
+    public double Random()
+    {
+        var x = _state;
+        x ^= x << 13;
+        x ^= x >> 17;
+        x ^= x << 5;
+
+        _state = x;
+
+        if (_state == _initSeed) {
+            _isStartedRepeat = true;
+        }
+
+        return _state / (double) uint.MaxValue;
     }
 }
 

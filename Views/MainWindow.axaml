@@ -5,8 +5,8 @@
     mc:Ignorable="d"
     d:DesignWidth="800"
     d:DesignHeight="550"
-	Width="800"
-	Height="550"
+    Width="800"
+    Height="550"
     x:Class="RNGExperiments.MainWindow"
     xmlns:pages="using:ControlCatalog.Pages"
     xmlns:local="using:RNGExperiments"
@@ -41,7 +41,6 @@
                     Grid.Row="0"
                     Grid.Column="1"
                     SelectedItem="{Binding SelectedRngItem}"
-                    MaxDropDownHeight="100"
                     VerticalAlignment="Center"
                     Margin="0 5">
                     <ComboBox.ItemTemplate>
