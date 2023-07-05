@@ -21,7 +21,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                 imagePanel.Children.Remove(imageScrollViewer);
                 imagePanel.Children.Add(imageScrollViewer);
             };
-            rngSelectedBox.SelectedIndex = 0;
             ViewModel!.Ready();
             action(ViewModel!.CheckWhenRepeats.Subscribe(ShowDialog));
         });

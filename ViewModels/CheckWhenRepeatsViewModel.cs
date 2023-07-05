@@ -92,7 +92,7 @@ public class CheckWhenRepeatsViewModel : ViewModelBase
             }
 
             stopWatch.Stop();
-        }, token);
+        });
 
         IsRunning = false;
         if (!token.IsCancellationRequested)

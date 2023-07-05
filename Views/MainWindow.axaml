@@ -31,12 +31,13 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="Generator:" />
-                <ComboBox x:Name="rngSelectedBox"
+                <ComboBox
                     ItemsSource="{Binding RngGeneratorLabels}"
                     Grid.Row="0"
                     Grid.Column="1"
@@ -52,34 +53,51 @@
                 <TextBlock Grid.Row="1"
                     Grid.Column="0"
                     VerticalAlignment="Center"
-                    Text="Seed: "
-                    Margin="0 5" />
-                <TextBox Grid.Row="1"
+                    Text="Color Mode:" />
+                <ComboBox
+                    ItemsSource="{Binding ColorModeLabels}"
+                    Grid.Row="1"
                     Grid.Column="1"
+                    SelectedItem="{Binding ColorModeItem}"
                     VerticalAlignment="Center"
-                    Margin="0 5"
-                    Text="{Binding RngSeed, Converter={StaticResource NumberConverter}}" />
+                    Margin="0 5">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Description}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <TextBlock Grid.Row="2"
                     Grid.Column="0"
                     VerticalAlignment="Center"
-                    Text="Width: "
+                    Text="Seed: "
                     Margin="0 5" />
                 <TextBox Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
-                    Text="{Binding ImageWidth, Converter={StaticResource NumberConverter}}" />
+                    Text="{Binding RngSeed, Converter={StaticResource NumberConverter}}" />
                 <TextBlock Grid.Row="3"
                     Grid.Column="0"
                     VerticalAlignment="Center"
-                    Text="Height: " />
+                    Text="Width: "
+                    Margin="0 5" />
                 <TextBox Grid.Row="3"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Margin="0 5"
+                    Text="{Binding ImageWidth, Converter={StaticResource NumberConverter}}" />
+                <TextBlock Grid.Row="4"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Height: " />
+                <TextBox Grid.Row="4"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0 5"
                     Text="{Binding ImageHeight, Converter={StaticResource NumberConverter}}" />
                 <Button Grid.ColumnSpan="2"
-                    Grid.Row="4"
+                    Grid.Row="5"
                     Margin="0 5"
                     Command="{Binding CheckWhenRepeats}"
                     HorizontalContentAlignment="Center"
@@ -87,7 +105,7 @@
                     Check When Repeats
                 </Button>
                 <Button Grid.ColumnSpan="2"
-                    Grid.Row="5"
+                    Grid.Row="6"
                     Margin="0 5"
                     Command="{Binding SaveImage}"
                     HorizontalContentAlignment="Center"

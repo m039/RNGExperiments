@@ -24,8 +24,6 @@ public class MainWindowViewModel : ViewModelBase
 
     int _rngSeed = 0;
 
-    RngType _rngType = RngType.LCG;
-
     Bitmap? _bitmap;
 
     IImage? _imageSource;
@@ -40,24 +38,39 @@ public class MainWindowViewModel : ViewModelBase
 
     RngGeneratorLabel? _selectedRngItem;
 
+    ColorModeLabel? _colorModeItem;
+
     public MainWindowViewModel()
     {
-        var labels = new List<RngGeneratorLabel>();
+        // Rng labels.
+        var rngLabels = new List<RngGeneratorLabel>();
 
         foreach (RngType rngType in Enum.GetValues(typeof(RngType)))
         {
-            labels.Add(new RngGeneratorLabel(
+            var label = new RngGeneratorLabel(
                 rngType.GetDescription(),
                 rngType
-            ));
+            );
+
+            _selectedRngItem ??= label;
+
+            rngLabels.Add(label);
         }
 
-        RngGeneratorLabels = labels;
+        RngGeneratorLabels = rngLabels;
 
+        // Color mode labels.
+        var colorModeLabels = new List<ColorModeLabel>();
+        _colorModeItem = new ColorModeLabel("Gray", true);
+        colorModeLabels.Add(_colorModeItem);
+        colorModeLabels.Add(new ColorModeLabel("Color", false));
+        ColorModeLabels = colorModeLabels;
+
+        // Commands.
         CheckWhenRepeats = ReactiveCommand.Create(() =>
         {
             return new CheckWhenRepeatsViewModel(
-                _rngType,
+                _selectedRngItem!.RngType,
                 _rngSeed
             );
         }, this.WhenAnyValue(x => x.SelectedRngItem,
@@ -74,7 +87,8 @@ public class MainWindowViewModel : ViewModelBase
                 Title = "Save Image"
             });
 
-            if (_bitmap != null && storageFile != null) {
+            if (_bitmap != null && storageFile != null)
+            {
                 _bitmap.Save(storageFile.Path.AbsolutePath);
             }
         }, this.WhenAnyValue(x => x.ImageSource, (IImage? image) => image != null));
@@ -156,13 +170,27 @@ public class MainWindowViewModel : ViewModelBase
             this.RaiseAndSetIfChanged(ref _selectedRngItem, value);
             if (value != null)
             {
-                _rngType = value.RngType;
+                SetImage();
+            }
+        }
+    }
+
+    public ColorModeLabel? ColorModeItem
+    {
+        get => _colorModeItem;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _colorModeItem, value);
+            if (value != null)
+            {
                 SetImage();
             }
         }
     }
 
     public IEnumerable<RngGeneratorLabel> RngGeneratorLabels { get; }
+
+    public IEnumerable<ColorModeLabel> ColorModeLabels { get; }
 
     public event System.Action? OnGenerationFinished;
 
@@ -196,7 +224,8 @@ public class MainWindowViewModel : ViewModelBase
         var rowBytes = imageWidth * bpp;
         var totalBytes = imageHeight * rowBytes;
         var address = Marshal.AllocHGlobal(totalBytes);
-        var rng = _rngType.Create(_rngSeed);
+        var rng = _selectedRngItem!.RngType.Create(_rngSeed);
+        var isGray = _colorModeItem!.IsGray;
 
         await Task.Run(() =>
         {
@@ -216,7 +245,7 @@ public class MainWindowViewModel : ViewModelBase
                         }
 
                         var index = (imageHeight - y - 1) * imageWidth * bpp + x * bpp;
-                        var color = GetColorAt(x, y, rng);
+                        var color = GetColorAt(x, y, rng, isGray);
                         p[index + 0] = color.R;
                         p[index + 1] = color.G;
                         p[index + 2] = color.B;
@@ -252,10 +281,35 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    Color GetColorAt(int x, int y, IRng rng)
+#pragma warning disable IDE0060
+    static Color GetColorAt(int x, int y, IRng rng, bool isGray)
     {
-        var value = (byte)(0xff * rng.Random());
-        return new Color(0xff, value, value, value);
+        if (isGray) {
+            var value = (byte)(0xff * rng.Random());
+            return new Color(0xff, value, value, value);
+        } else {
+            var value = rng.RandomUInt();
+            return new Color(
+                (byte) ((value >> 24) & 0xff),
+                (byte) ((value >> 16) & 0xff),
+                (byte) ((value >> 8) & 0xff),
+                (byte) (value & 0xff)
+            );
+        }
+    }
+#pragma warning restore IDE0060
+
+    public class ColorModeLabel
+    {
+        public ColorModeLabel(string description, bool isGray)
+        {
+            IsGray = isGray;
+            Description = description;
+        }
+
+        public bool IsGray { get; }
+
+        public string Description { get; }
     }
 
     public class RngGeneratorLabel

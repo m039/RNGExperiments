@@ -22,7 +22,7 @@ public static class RngTypeExt
     {
         return type switch
         {
-            RngType.Xorshift128 => new Xorshift128(seed),
+            RngType.Xorshift128 => new Xorshift128((uint)seed),
             RngType.SystemDefault => new SystemRng(seed),
             RngType.Xorshift32 => new Xorshift32((uint) seed),
             _ => new LCG((uint)seed),
@@ -45,6 +45,8 @@ public interface IRng
     double Random();
 
     bool IsStartedRepeat();
+
+    uint RandomUInt();
 }
 
 class SystemRng : IRng
@@ -65,13 +67,19 @@ class SystemRng : IRng
     {
         return _random.NextDouble();
     }
+
+    public uint RandomUInt() {
+        uint thirtyBits = (uint) _random.Next(1 << 30);
+        uint twoBits = (uint) _random.Next(1 << 2);
+        uint fullRange = (thirtyBits << 2) | twoBits;
+        return fullRange;
+    }
 }
 
 class LCG : IRng
 {
-    const uint Modulus = (uint)1 << 31;
-    const uint Multiplier = 1103515245;
-    const uint Increment = 12345;
+    const uint Multiplier = 134775813;
+    const uint Increment = 1;
 
     uint _seed;
 
@@ -92,12 +100,16 @@ class LCG : IRng
 
     public double Random()
     {
-        _seed = (Multiplier * _seed + Increment) % Modulus;
+        return RandomUInt() / (double)uint.MaxValue;
+    }
+
+    public uint RandomUInt() {
+        _seed = Multiplier * _seed + Increment;
         if (_seed == _initSeed)
         {
             _isStartedRepeat = true;
         }
-        return _seed / (double)Modulus;
+        return _seed;
     }
 }
 
@@ -125,6 +137,10 @@ class Xorshift32 : IRng
 
     public double Random()
     {
+        return RandomUInt() / (double) uint.MaxValue;
+    }
+
+    public uint RandomUInt() {
         var x = _state;
         x ^= x << 13;
         x ^= x >> 17;
@@ -136,19 +152,19 @@ class Xorshift32 : IRng
             _isStartedRepeat = true;
         }
 
-        return _state / (double) uint.MaxValue;
+        return _state;
     }
 }
 
 class Xorshift128 : IRng
 {
-    int x0, x1, x2, x3;
+    uint x0, x1, x2, x3;
 
-    readonly int _initSeed;
+    readonly uint _initSeed;
 
     bool _isStartedRepeat;
 
-    public Xorshift128(int seed)
+    public Xorshift128(uint seed)
     {
         if (seed == 0) {
             seed = 1;
@@ -165,6 +181,10 @@ class Xorshift128 : IRng
 
     public double Random()
     {
+        return RandomUInt() / (double)int.MaxValue;
+    }
+
+    public uint RandomUInt() {
         var t = x3;
 
         var s = x0;
@@ -182,6 +202,6 @@ class Xorshift128 : IRng
             _isStartedRepeat = true;
         }
 
-        return x0 / (double)int.MaxValue;
+        return x0;
     }
 }
