@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
@@ -22,13 +23,26 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                 imagePanel.Children.Add(imageScrollViewer);
             };
             ViewModel!.Ready();
-            action(ViewModel!.CheckWhenRepeats.Subscribe(ShowDialog));
+            action(ViewModel!.CheckWhenRepeats.Subscribe(ShowCheckWhenRepeatsDialog));
+            action(ViewModel!.SaveImage.Subscribe(ShowBackgroindOperationDialog));
         });
     }
 
-    async void ShowDialog(CheckWhenRepeatsViewModel vm) {
+    async void ShowCheckWhenRepeatsDialog(CheckWhenRepeatsViewModel argument) {
         var dialog = new CheckWhenRepeatsWindow {
-            DataContext = vm
+            DataContext = argument
+        };
+        await dialog.ShowDialog(this);
+    }
+
+    async void ShowBackgroindOperationDialog(Task<BackgroundOperationViewModel?> argument) {
+        var vm = await argument;
+        if (vm == null)
+            return;
+
+        var dialog = new BackgroundOperationWindow {
+            DataContext = vm,
+            Title = vm.Tilte
         };
         await dialog.ShowDialog(this);
     }

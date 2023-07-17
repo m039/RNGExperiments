@@ -1,0 +1,29 @@
+<Window xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d"
+  Width="300"
+  Height="100"
+  MinHeight="100"
+  x:Class="RNGExperiments.BackgroundOperationWindow">
+  <DockPanel>
+    <ProgressBar IsIndeterminate="True"
+      HorizontalAlignment="Stretch"
+      DockPanel.Dock="Top"/>
+    <Grid HorizontalAlignment="Stretch"
+      Margin="15">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Button HorizontalAlignment="Center"
+        Command="{Binding Cancel}">
+        <TextBlock HorizontalAlignment="Center"
+          Text="Cancel"/>
+      </Button>
+    </Grid>
+  </DockPanel>
+</Window>

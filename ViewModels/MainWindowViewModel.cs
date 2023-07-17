@@ -13,6 +13,7 @@ using System.Threading;
 using System.Reactive;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using System.IO;
 
 namespace RNGExperiments;
 
@@ -89,8 +90,30 @@ public class MainWindowViewModel : ViewModelBase
 
             if (_bitmap != null && storageFile != null)
             {
-                _bitmap.Save(storageFile.Path.AbsolutePath);
+                var tokenSource = new CancellationTokenSource();
+                var token = tokenSource.Token;
+                var action = () =>
+                {
+                    try
+                    {
+                        using (var steam = new CancelableFileStream(File.Create(storageFile.Path.AbsolutePath), token))
+                        {
+                            _bitmap.Save(steam);
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        File.Delete(storageFile.Path.AbsolutePath);
+                    }
+
+                    tokenSource.Dispose();
+                };
+                var cancel = () => tokenSource.Cancel();
+
+                return new BackgroundOperationViewModel("Saving the Image", action, cancel);
             }
+
+            return null;
         }, this.WhenAnyValue(x => x.ImageSource, (IImage? image) => image != null));
     }
 
@@ -160,7 +183,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, CheckWhenRepeatsViewModel> CheckWhenRepeats { get; }
 
-    public ReactiveCommand<Unit, Task> SaveImage { get; }
+    public ReactiveCommand<Unit, Task<BackgroundOperationViewModel?>> SaveImage { get; }
 
     public RngGeneratorLabel? SelectedRngItem
     {
@@ -284,16 +307,19 @@ public class MainWindowViewModel : ViewModelBase
 #pragma warning disable IDE0060
     static Color GetColorAt(int x, int y, IRng rng, bool isGray)
     {
-        if (isGray) {
+        if (isGray)
+        {
             var value = (byte)(0xff * rng.Random());
             return new Color(0xff, value, value, value);
-        } else {
+        }
+        else
+        {
             var value = rng.RandomUInt();
             return new Color(
-                (byte) ((value >> 24) & 0xff),
-                (byte) ((value >> 16) & 0xff),
-                (byte) ((value >> 8) & 0xff),
-                (byte) (value & 0xff)
+                (byte)((value >> 24) & 0xff),
+                (byte)((value >> 16) & 0xff),
+                (byte)((value >> 8) & 0xff),
+                (byte)(value & 0xff)
             );
         }
     }
