@@ -10,16 +10,21 @@ public class CancelableFileStream : Stream, IDisposable
 
     CancellationToken _token;
 
-    public CancelableFileStream(FileStream stream, CancellationToken token) {
+    public CancelableFileStream(FileStream stream, CancellationToken token)
+    {
         _stream = stream;
         _token = token;
+
+        if (stream == null || token == null) {
+            throw new ArgumentNullException("Stream and token are mandatory parameters.");
+        }
     }
 
-    public override bool CanRead => _stream.CanRead;
+    public override bool CanRead => _stream.CanRead && !_token.IsCancellationRequested;
 
-    public override bool CanSeek => _stream.CanSeek;
+    public override bool CanSeek => _stream.CanSeek && !_token.IsCancellationRequested;
 
-    public override bool CanWrite => _stream.CanWrite;
+    public override bool CanWrite => _stream.CanWrite && !_token.IsCancellationRequested;
 
     public override long Length => _stream.Length;
 
@@ -27,6 +32,7 @@ public class CancelableFileStream : Stream, IDisposable
 
     public override void Flush()
     {
+        _token.ThrowIfCancellationRequested();
         _stream.Flush();
     }
 
@@ -44,6 +50,7 @@ public class CancelableFileStream : Stream, IDisposable
 
     public override void SetLength(long value)
     {
+        _token.ThrowIfCancellationRequested();
         _stream.SetLength(value);
     }
 
