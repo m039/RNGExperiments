@@ -6,17 +6,17 @@ namespace RNGExperiments;
 
 public class CancelableFileStream : Stream, IDisposable
 {
-    FileStream _stream;
+    readonly FileStream _stream;
 
-    CancellationToken _token;
+    readonly CancellationToken _token;
 
     public CancelableFileStream(FileStream stream, CancellationToken token)
     {
         _stream = stream;
         _token = token;
 
-        if (stream == null || token == null) {
-            throw new ArgumentNullException("Stream and token are mandatory parameters.");
+        if (stream == null || token == default) {
+            throw new ArgumentNullException(nameof(stream), "Stream and token arguments are mandatory");
         }
     }
 

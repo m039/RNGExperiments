@@ -92,14 +92,17 @@ public class MainWindowViewModel : ViewModelBase
             {
                 var tokenSource = new CancellationTokenSource();
                 var token = tokenSource.Token;
-                var action = () =>
+                void action()
                 {
                     try
                     {
-                        using (var steam = new CancelableFileStream(File.Create(storageFile.Path.AbsolutePath), token))
-                        {
-                            _bitmap.Save(steam);
-                        }
+                        var fileStream = File.Create(
+                            storageFile.Path.AbsolutePath,
+                            1024 * 1024, 
+                            FileOptions.Asynchronous
+                            );
+                        using var steam = new CancelableFileStream(fileStream, token);
+                        _bitmap.Save(steam);
                     }
                     catch (OperationCanceledException)
                     {
@@ -107,8 +110,10 @@ public class MainWindowViewModel : ViewModelBase
                     }
 
                     tokenSource.Dispose();
-                };
-                var cancel = () => tokenSource.Cancel();
+                }
+                void cancel() { 
+                    tokenSource.Cancel(); 
+                }
 
                 return new BackgroundOperationViewModel("Saving the Image", action, cancel);
             }
